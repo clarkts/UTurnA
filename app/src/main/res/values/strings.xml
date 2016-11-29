@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">UTurn</string>
     <string name="title_activity_maps">Map</string>
+    <string name="button_route">Route</string>
+    <string name="button_nav">Navigate</string>
 </resources>
