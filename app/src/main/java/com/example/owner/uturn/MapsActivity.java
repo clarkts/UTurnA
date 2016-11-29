@@ -157,8 +157,8 @@ public class MapsActivity extends AppCompatActivity
     }
 
     public LatLng urlMaker(LatLng strt,int mult1,int mult2) {
-        double rand = random.nextDouble();
-        double rand1 = random.nextDouble();
+        double rand = random.nextDouble()/100;
+        double rand1 = random.nextDouble()/100;
         LatLng end = new LatLng(strt.latitude + rand*mult1, strt.longitude + rand1*mult2);
         final String url1 = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + strt.latitude + "," + strt.longitude
