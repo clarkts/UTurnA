@@ -57,6 +57,7 @@ public class MapsActivity extends AppCompatActivity
     private LocationManager lm;
     private Location location;
     private boolean center;
+    private Random random;
     double startLng, startLat;
     LatLng latLng;
 
@@ -65,6 +66,7 @@ public class MapsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        random = new Random();
 
         final Button routeButton = (Button) findViewById(R.id.button_route);
         routeButton.setOnClickListener(new View.OnClickListener() {
@@ -140,47 +142,31 @@ public class MapsActivity extends AppCompatActivity
     public void route(View view) throws IOException {
         int sum = 0;
         mMap.clear();
-        Random random = new Random();
         int decider = random.nextInt(4)+ 1;
-        double rand = random.nextDouble();
+
         LatLng strt = latLng;
-        LatLng end = new LatLng(strt.latitude + rand, strt.longitude - rand);
+        LatLng end1 = urlMaker(strt, 1, -1);
+        LatLng end2 = urlMaker(end1, -1, -1);
+        LatLng end3 = urlMaker(end2, -1, 1);
         final String url = "https://maps.googleapis.com/maps/api/directions/json?"
+                + "origin=" + end3.latitude + "," + end3.longitude
+                + "&destination=" + strt.latitude + "," + strt.longitude
+                + "&avoid=highways"
+                + "&key=" + key;
+        new FetchUrl().execute(new String[]{url});
+    }
+
+    public LatLng urlMaker(LatLng strt,int mult1,int mult2) {
+        double rand = random.nextDouble();
+        double rand1 = random.nextDouble();
+        LatLng end = new LatLng(strt.latitude + rand*mult1, strt.longitude + rand1*mult2);
+        final String url1 = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + strt.latitude + "," + strt.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
                 + "&avoid=highways"
                 + "&key=" + key;
-        new FetchUrl().execute(new String[]{url});
-
-        double rand1 = random.nextDouble();
-        LatLng strt1 = end;
-        LatLng end1 = new LatLng(strt1.latitude - rand1, strt1.longitude - rand1);
-        final String url1 = "https://maps.googleapis.com/maps/api/directions/json?"
-                + "origin=" + strt1.latitude + "," + strt1.longitude
-                + "&destination=" + end1.latitude + "," + end1.longitude
-                + "&avoid=highways"
-                + "&key=" + key;
         new FetchUrl().execute(new String[]{url1});
-
-        double rand2 = random.nextDouble();
-        LatLng strt2 = end1;
-        LatLng end2 = new LatLng(strt2.latitude - rand2, strt2.longitude - rand2);
-        final String url2 = "https://maps.googleapis.com/maps/api/directions/json?"
-                + "origin=" + strt2.latitude + "," + strt2.longitude
-                + "&destination=" + end2.latitude + "," + end2.longitude
-                + "&avoid=highways"
-                + "&key=" + key;
-        new FetchUrl().execute(new String[]{url2});
-
-        double rand3 = random.nextDouble();
-        LatLng strt3 = end2;
-        LatLng end3 = strt;
-        final String url3 = "https://maps.googleapis.com/maps/api/directions/json?"
-                + "origin=" + strt3.latitude + "," + strt3.longitude
-                + "&destination=" + end3.latitude + "," + end3.longitude
-                + "&avoid=highways"
-                + "&key=" + key;
-        new FetchUrl().execute(new String[]{url3});
+        return end;
     }
 
     private class FetchUrl extends AsyncTask<String, Void, String> {
