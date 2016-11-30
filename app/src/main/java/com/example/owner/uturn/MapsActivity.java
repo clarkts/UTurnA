@@ -259,6 +259,7 @@ public class MapsActivity extends AppCompatActivity
                 jsonObject = new JSONObject(jsonData[0]);
                 DataParser parser = new DataParser();
                 routes = parser.parse(jsonObject);
+                Log.d("Otherside", parser.time + " min");
             } catch (Exception e) {
                 e.printStackTrace();
             }

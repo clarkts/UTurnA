@@ -35,7 +35,6 @@ public class DataParser {
                     duration += ((JSONObject)jLegs.get(j)).getJSONObject("duration")
                             .getInt("value");
                     time = (int)Math.round(duration/60);
-                    Log.d("Time", time + "min");
                     jSteps = ((JSONObject)jLegs.get(j)).getJSONArray("steps");
                     for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = "";
