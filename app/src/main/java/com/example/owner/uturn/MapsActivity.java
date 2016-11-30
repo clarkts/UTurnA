@@ -54,8 +54,8 @@ public class MapsActivity extends AppCompatActivity
     private static final String key = "AIzaSyDVZmcC3r7c5glJWmGh-c30DnUQKvnHTxA";
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
-    private LocationManager lm;
     private Location location;
+    private LocationManager lm;
     private boolean center;
     private Random random;
     double startLng, startLat;
@@ -143,22 +143,55 @@ public class MapsActivity extends AppCompatActivity
         int sum = 0;
         mMap.clear();
         int decider = random.nextInt(4)+ 1;
+        int decider1 = random.nextInt(1) + 1;
+        LatLng end1, end2, end3;
 
         LatLng strt = latLng;
-        LatLng end1 = urlMaker(strt, 1, -1);
-        LatLng end2 = urlMaker(end1, -1, -1);
-        LatLng end3 = urlMaker(end2, -1, 1);
+        if (decider == 1) {
+            end1 = urlMaker(strt, 1, -1);
+            if (decider1 == 1) {
+                end2 = urlMaker(end1, -1, -1);
+            } else {
+                end2 = urlMaker(end1, 1, 1);
+            }
+            end3 = urlMaker(end2, -1, 1);
+        } else if (decider == 2) {
+            end1 = urlMaker(strt, 1, 1);
+            if (decider1 == 1) {
+                end2 = urlMaker(end1, -1, 1);
+            } else {
+                end2 = urlMaker(end1, 1, -1);
+            }
+            end3 = urlMaker(end2, -1, -1);
+        } else if (decider == 3) {
+            end1 = urlMaker(strt, -1, 1);
+            if (decider1 == 1) {
+                end2 = urlMaker(end1, -1, -1);
+            } else {
+                end2 = urlMaker(end1, 1, 1);
+            }
+            end3 = urlMaker(end2, 1, -1);
+        } else {
+            end1 = urlMaker(strt, -1, -1);
+            if (decider1 == 1) {
+                end2 = urlMaker(end1, 1, -1);
+            } else {
+                end2 = urlMaker(end1, -1, 1);
+            }
+            end3 = urlMaker(end2, 1, 1);
+        }
         final String url = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + end3.latitude + "," + end3.longitude
                 + "&destination=" + strt.latitude + "," + strt.longitude
                 + "&avoid=highways"
                 + "&key=" + key;
+        Log.d("urlTest", url);
         new FetchUrl().execute(new String[]{url});
     }
 
     public LatLng urlMaker(LatLng strt,int mult1,int mult2) {
-        double rand = random.nextDouble()/100;
-        double rand1 = random.nextDouble()/100;
+        double rand = random.nextDouble()/5;
+        double rand1 = random.nextDouble()/5;
         LatLng end = new LatLng(strt.latitude + rand*mult1, strt.longitude + rand1*mult2);
         final String url1 = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + strt.latitude + "," + strt.longitude

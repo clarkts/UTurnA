@@ -1,5 +1,7 @@
 package com.example.owner.uturn;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -15,11 +17,14 @@ import java.util.List;
  */
 
 public class DataParser {
+    double duration;
+    int time;
+
     public List<List<HashMap<String, String>>> parse(JSONObject jsonObject) {
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
-        JSONArray jRoutes;
-        JSONArray jLegs;
-        JSONArray jSteps;
+        JSONArray jRoutes, jLegs, jSteps;
+        duration = 0;
+        time = 0;
 
         try {
             jRoutes = jsonObject.getJSONArray("routes");
@@ -27,7 +32,11 @@ public class DataParser {
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
                 for (int j = 0; j < jLegs.length(); j++) {
-                    jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
+                    duration += ((JSONObject)jLegs.get(j)).getJSONObject("duration")
+                            .getInt("value");
+                    time = (int)Math.round(duration/60);
+                    Log.d("Time", time + "min");
+                    jSteps = ((JSONObject)jLegs.get(j)).getJSONArray("steps");
                     for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = "";
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
